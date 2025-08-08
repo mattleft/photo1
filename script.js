@@ -212,4 +212,32 @@ document.addEventListener("DOMContentLoaded", function () {
       parallax.style.transform = `translateY(${speed}px)`;
     }
   });
+
+  // Enhanced lazy loading with intersection observer
+  const imageObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        img.classList.add("loaded");
+        observer.unobserve(img);
+      }
+    });
+  });
+
+  // Observe all lazy-loaded images
+  document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+    imageObserver.observe(img);
+  });
+
+  // Preload critical images
+  const preloadImage = (src) => {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = src;
+    document.head.appendChild(link);
+  };
+
+  // Preload hero image for faster display
+  preloadImage("images/hero/hero-main.jpg");
 });
